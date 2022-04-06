@@ -52,4 +52,55 @@ or p.person_contacted_number < 1;
 SELECT p.person_first_name 
 FROM person p
 WHERE p.person_contacted_number
-BETWEEN 1 AND 10;
+BETWEEN 0 AND 9;
+
+-- change Joh Ahem to Ahern
+UPDATE person 
+SET person_last_name = 'Ahern'
+WHERE person_id = 4;
+
+SELECT p.person_first_name as FirstName
+FROM person p
+WHERE p.person_last_name = "Ahern"
+OR	p.person_contacted_number = 1;
+
+-- LIKE
+-- Who are all the people in my contact list that have a first name that begins with the letter J.
+
+SELECT p.person_last_name as Last_Name -- go and find the last names with the following conditions and set it as Last_Name
+FROM person p -- from the person tabel (using p as an alias)
+WHERE p.person_first_name 
+LIKE '%i%'; -- has an i somewhere in the first name
+
+SELECT p.person_last_name as Last_Name 
+FROM person p 
+WHERE p.person_first_name
+LIKE 'f%'; -- where the first name starts like f
+
+SELECT p.person_last_name as Last_Name
+FROM person p
+WHERE p.person_first_name
+LIKE '%z'; -- where the first name ends like z
+
+-- IN
+-- Who are all the people in my contact list that are named Jon or Fritz?
+SELECT p.person_first_name as FirstName
+FROM person p
+WHERE p.person_first_name = "Jon" 
+OR p.person_first_name = 'Fritz';
+
+SELECT p.person_first_name, p.person_last_name, p.person
+FROM person p
+WHERE p.person_first_name
+IN ('Jon', 'Fritz');	-- this IN operator returns the same as ^ 
+
+-- IS
+-- speceial operator. Lke an equals operator. But just for values that might be null
+-- Who are all the people in my contact list that do not have a last name.
+SELECT p.person_first_name
+FROM person p
+WHERE p.person_last_name IS null;
+
+SELECT e.email_address_id, e.email_address_person_id, e.email_address
+FROM email_address e
+WHERE e.email_address_person_id IS NULL;

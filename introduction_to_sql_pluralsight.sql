@@ -89,7 +89,7 @@ FROM person p
 WHERE p.person_first_name = "Jon" 
 OR p.person_first_name = 'Fritz';
 
-SELECT p.person_first_name, p.person_last_name, p.person
+SELECT p.person_id, p.person_first_name, p.person_last_name, p.person_contacted_number, p.person_date_last_contacted, p.person_date_added
 FROM person p
 WHERE p.person_first_name
 IN ('Jon', 'Fritz');	-- this IN operator returns the same as ^ 
@@ -104,3 +104,67 @@ WHERE p.person_last_name IS null;
 SELECT e.email_address_id, e.email_address_person_id, e.email_address
 FROM email_address e
 WHERE e.email_address_person_id IS NULL;
+
+-- In summary: --
+-- The WHERE clause enables us to restrict the result set of our queries. The more complex the question we want to ask, the more complex the where clause becomes
+-- -------------------------------------
+
+-- Shaping results wit ORDER BY and GROUP BY
+-- sometimes you want the result set to be different than the data returned by a simple select statement.
+-- Q: Who are all the people in my contact list, ordered by last name.
+
+SELECT person_last_name AS Last_Name
+FROM person
+ORDER BY person_last_name;
+
+-- Set Functions: COUNT, MIN, MAX, SUM, AVG
+-- Q: What is the total number of times I've contacted my contacts?
+
+SELECT COUNT(person_id) --
+FROM person 
+WHERE person_last_name = 'Ahern';
+
+SELECT MIN(person_contacted_number) -- find the min number in this column
+FROM person;
+
+SELECT MAX(person_contacted_number) -- go and find the max number in this column
+FROM person; 
+
+-- Q: What is the sum of the times I contacted people with a name that starts with j?
+SELECT SUM(person_contacted_number)
+FROM person
+WHERE person_first_name
+like 'j%'
+ORDER BY person_last_name;
+
+SELECT AVG(person_contacted_number)
+FROM person;
+
+-- Set Functions + Qaulifiers
+-- Q; What is the count of unique first names among my contacts?
+SELECT COUNT(DISTINCT person_first_name) -- the set function COUNT with the qaulifier DISTINCT returns the number of distinct first names
+FROM person;
+
+-- GROUP BY
+-- Q: What is the count of every unique first name among my contacts?
+SELECT COUNT(person_first_name), person_id, person_first_name, person_last_name
+FROM person
+GROUP BY person_first_name;
+
+-- HAVING
+-- What is the count of unique first names among my contacts that appear at least 5 times.
+SELECT COUNT(person_first_name), person_id, person_first_name, person_last_name, person_contacted_number
+FROM person
+GROUP BY person_first_name
+HAVING person_contacted_number < 5;
+
+SELECT COUNT(person_first_name), person_id, person_first_name, person_last_name, person_contacted_number
+FROM person
+GROUP BY person_first_name
+HAVING COUNT(person_first_name) > 1; -- only what you want to see out of the specified columns above
+
+SELECT COUNT(person_first_name) AS Count, person_id as Id, person_first_name, person_last_name AS Last_Name, person_contacted_number
+FROM person
+ORDER BY 
+GROUP BY person_first_name
+HAVING Id < 3; -- only what you want to see out of the specified columns above. I only want to see the person_id, which I gave AS Id, so now I state it as Id.
